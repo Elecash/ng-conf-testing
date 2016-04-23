@@ -1,0 +1,46 @@
+{
+  "name": "ng-conf-testing",
+  "version": "1.0.0",
+  "description": "Angular2 Testing Workshop for ngConf",
+  "main": "index.js",
+  "scripts": {
+    "postinstall": "typings install",
+    "start": "npm run build && http-server -c-1 -o -s -p 8875 .",
+    "dev": "npm run test && http-server -c-1 -o -s -p 8875 .",
+    "build": "rm -rf dist && tsc -p src",
+    "pretest": "npm run build",
+    "test": "karma start karma.conf.js",
+    "posttest": "node_modules/.bin/remap-istanbul -i coverage/coverage-final.json -o coverage -t html",
+    "coverage": "http-server -c-1 -o -s -p 9875 ./coverage"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://elecash@github.com/Elecash/ng-conf-testing.git"
+  },
+  "author": "Raul Jimenez <elecash@gmail.com> (http://twofuckingedevelopers.com/)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Elecash/ng-conf-testing/issues"
+  },
+  "homepage": "https://github.com/Elecash/ng-conf-testing#readme",
+  "dependencies": {
+    "angular2": "2.0.0-beta.15",
+    "es6-promise": "3.1.2",
+    "es6-shim": "0.35.0",
+    "reflect-metadata": "0.1.2",
+    "rxjs": "5.0.0-beta.2",
+    "systemjs": "0.19.26",
+    "zone.js": "0.6.12"
+  },
+  "devDependencies": {
+    "http-server": "0.9.0",
+    "jasmine-core": "2.4.1",
+    "karma": "0.13.22",
+    "karma-chrome-launcher": "0.2.3",
+    "karma-coverage": "0.5.5",
+    "karma-jasmine": "0.3.8",
+    "remap-istanbul": "0.6.3",
+    "typescript": "1.8.10",
+    "typings": "0.8.1"
+  }
+}

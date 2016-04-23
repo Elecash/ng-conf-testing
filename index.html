@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Angular2 Github Cards</title>
+
+    <script src="node_modules/es6-shim/es6-shim.min.js"></script>
+    <script src="node_modules/angular2/bundles/angular2-polyfills.min.js"></script>
+    <script src="node_modules/systemjs/dist/system.js"></script>
+    <script src="node_modules/angular2/bundles/http.dev.js"></script>
+
+    <script>
+        System.config({
+            paths: {
+                'angular2/*': 'node_modules/angular2/*'
+            },
+            format: 'register',
+            defaultJSExtensions: true
+        });
+    </script>
+
+    <script src="node_modules/rxjs/bundles/Rx.min.js"></script>
+    <script src="node_modules/angular2/bundles/angular2.min.js"></script>
+
+    <script>
+        System.import('dist/bootstrap').catch(console.log.bind(console));
+    </script>
+
+</head>
+<body>
+
+<git-happ></git-happ>
+
+</body>
+</html>
