@@ -1,40 +1,43 @@
-import {Component, Input} from "angular2/core";
+import {Component, Input, OnChanges} from "angular2/core";
 import {GithubUser} from "../services/gh-user";
 import {Thousands} from "../pipes/thousands";
+import {GithubService} from "../services/gh-service";
+import "rxjs/add/operator/map";
 
 @Component({
     selector: 'gh-card',
     template: `
-        <div class="github-card user-card">
+        <span>{{ loadingMessage }}</span>
+        <div class="github-card user-card" *ngIf="user">
             <div class="header">
-                <a class="avatar" [href]="ghUser.html_url">
-                    <img [src]="ghUser.avatar_url + '&s=48'">
-                    <strong>{{ ghUser.name }}</strong>
-                    <span>@{{ ghUser.login }}</span>
+                <a class="avatar" [href]="user.html_url">
+                    <img [src]="user.avatar_url + '&s=48'">
+                    <strong>{{ user.name }}</strong>
+                    <span>@{{ user.login }}</span>
                 </a>
-                <a class="button" [href]="ghUser.html_url">Follow</a>
+                <a class="button" [href]="user.html_url">Follow</a>
             </div>
             
             <ul class="status">
                 <li>
-                    <a [href]="'https://github.com/' + ghUser.login + '?tab=repositories'">
-                        <strong>{{ ghUser.public_repos | thousands }}</strong>Repos
+                    <a [href]="'https://github.com/' + user.login + '?tab=repositories'">
+                        <strong>{{ user.public_repos | thousands }}</strong>Repos
                     </a>
                 </li>
                 <li>
-                    <a [href]="'https://gist.github.com/' + ghUser.login">
-                        <strong>{{ ghUser.public_gists | thousands }}</strong>Gists
+                    <a [href]="'https://gist.github.com/' + user.login">
+                        <strong>{{ user.public_gists | thousands }}</strong>Gists
                     </a>
                 </li>
                 <li>
-                    <a [href]="'https://github.com/' + ghUser.login + '/followers'">
-                        <strong>{{ ghUser.followers | thousands }}</strong>Followers
+                    <a [href]="'https://github.com/' + user.login + '/followers'">
+                        <strong>{{ user.followers | thousands }}</strong>Followers
                     </a>
                 </li>
             </ul>
             
-            <div class="footer" *ngIf="ghUser.hireable">
-                <a [href]="'mailto:' + ghUser.email">Available for hire.</a>
+            <div class="footer" *ngIf="user.hireable">
+                <a [href]="'mailto:' + user.email">Available for hire.</a>
             </div>
         </div>
     `,
@@ -185,10 +188,40 @@ import {Thousands} from "../pipes/thousands";
             color: #646464;
         }
     `],
+    providers: [GithubService],
     pipes: [Thousands]
 })
-export class GithubCard {
-    @Input() ghUser:GithubUser;
+export class GithubCard implements OnChanges {
+    @Input() ghUser:string;
 
-    constructor() {}
+    user:GithubUser;
+    loadingMessage:string = '';
+
+    constructor(public service:GithubService) {}
+
+    ngOnChanges(changeRecord) {
+        if (changeRecord.ghUser.currentValue) {
+            this.searchUser(changeRecord.ghUser.currentValue);
+        }
+    }
+
+    searchUser(username:string) {
+        this.loadingMessage = 'loading user...';
+
+        this.service.getUserByUsername(username)
+            .subscribe(
+                this.onLoadUser.bind(this),
+                this.onLoadUserError.bind(this)
+            );
+    }
+
+    onLoadUser(user) {
+        this.loadingMessage = '';
+        this.user = user;
+    }
+
+    onLoadUserError(user) {
+        this.loadingMessage = "User doesn't exist";
+        this.user = null;
+    }
 }
