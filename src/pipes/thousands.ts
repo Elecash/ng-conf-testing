@@ -13,8 +13,10 @@ export class Thousands implements PipeTransform {
             result = text;
         }
         else {
-            let exp = (Math.floor(Math.log(num) / Math.log(1000)));
-            result = (num / Math.pow(1000, exp)).toFixed(1) + 'K';
+            let exp:number = (Math.floor(Math.log(num) / Math.log(1000)));
+            let value:number = (num / Math.pow(1000, exp));
+            let decimals:number = (value % 1 != 0) ? 1 : 0;
+            result = value.toFixed(decimals) + 'K';
         }
 
         return result;

@@ -1,5 +1,3 @@
-/// <reference path="../typings/browser.d.ts" />
-
 import {Component} from "angular2/core";
 import 'rxjs/add/operator/map';
 
