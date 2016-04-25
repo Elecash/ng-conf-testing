@@ -17,4 +17,10 @@ export class GithubService {
 
         return this.http.get(url).map(response => response.json());
     }
+
+    getRepository(repo:string):Observable<any> {
+        let url:string = GithubService.GITHUB_API + '/repos/' + repo;
+
+        return this.http.get(url).map(response => response.json());
+    }
 }
