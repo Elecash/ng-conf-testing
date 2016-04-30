@@ -168,8 +168,7 @@ export class GithubRepo implements OnChanges {
     repo:GithubRepository;
     loadingMessage:string = '';
 
-    constructor(public service:GithubService) {
-    }
+    constructor(public service:GithubService) {}
 
     ngOnChanges(changeRecord) {
         if (changeRecord.ghRepo.currentValue) {
