@@ -17,8 +17,12 @@ System.config({
     }
 });
 
-System.import('angular2/src/platform/browser/browser_adapter')
-    .then(function(browser_adapter) { browser_adapter.BrowserDomAdapter.makeCurrent(); })
+System.import('angular2/testing')
+    .then(function(testing) {
+        return System.import('angular2/platform/testing/browser').then(function(providers) {
+            testing.setBaseTestProviders(providers.TEST_BROWSER_PLATFORM_PROVIDERS, providers.TEST_BROWSER_APPLICATION_PROVIDERS);
+        });
+    })
     .then(function() { return Promise.all(resolveTestFiles()); })
     .then(function() { __karma__.start(); }, function(error) { __karma__.error(error.stack || error); });
 
