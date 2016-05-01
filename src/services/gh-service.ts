@@ -1,6 +1,6 @@
-import {Http} from 'angular2/http';
+import {Http} from '@angular/http';
 import {Observable} from 'rxjs/Observable';
-import {Inject} from 'angular2/core';
+import {Inject} from '@angular/core';
 import {GithubUser} from './gh-user';
 
 export class GithubService {
