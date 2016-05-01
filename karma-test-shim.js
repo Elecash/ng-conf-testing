@@ -7,58 +7,100 @@ jasmine.DEFAULT_TIMEOUT_INTERVAL = 1000;
 // // we will call `__karma__.start()` later, once all the specs are loaded.
 __karma__.loaded = function() {};
 
+function isJsFile(path) {
+    return path.slice(-3) == '.js';
+}
+
+function isSpecFile(path) {
+    return path.slice(-8) == '.spec.js';
+}
+
+function isBuiltFile(path) {
+    var builtPath = '/base/dist/';
+    return isJsFile(path) && (path.substr(0, builtPath.length) == builtPath);
+}
+
+var allSpecFiles = Object.keys(window.__karma__.files)
+    .filter(isSpecFile)
+    .filter(isBuiltFile);
+
 System.config({
+    baseURL: '/base'
+});
+
+System.config({
+    map: {
+        'rxjs': 'node_modules/rxjs',
+        '@angular': 'node_modules/@angular',
+        'app': 'dist'
+    },
     packages: {
-        'base/dist': {
-            defaultExtension: false,
-            format: 'cjs',
-            map: Object.keys(window.__karma__.files).filter(onlyAppFiles).reduce(createPathRecords, {})
+        'app': {
+            main: 'bootstrap.js',
+            defaultExtension: 'js'
+        },
+        '@angular/core': {
+            main: 'index.js',
+            defaultExtension: 'js'
+        },
+        '@angular/compiler': {
+            main: 'index.js',
+            defaultExtension: 'js'
+        },
+        '@angular/common': {
+            main: 'index.js',
+            defaultExtension: 'js'
+        },
+        '@angular/http': {
+            main: 'index.js',
+            defaultExtension: 'js'
+        },
+        '@angular/testing': {
+            main: 'index.js',
+            defaultExtension: 'js'
+        },
+        '@angular/platform-browser': {
+            main: 'index.js',
+            defaultExtension: 'js'
+        },
+        '@angular/platform-browser-dynamic': {
+            main: 'index.js',
+            defaultExtension: 'js'
+        },
+        'rxjs': {
+            defaultExtension: 'js'
         }
     }
 });
 
-System.import('angular2/testing')
-    .then(function(testing) {
-        return System.import('angular2/platform/testing/browser').then(function(providers) {
-            testing.setBaseTestProviders(providers.TEST_BROWSER_PLATFORM_PROVIDERS, providers.TEST_BROWSER_APPLICATION_PROVIDERS);
-        });
-    })
-    .then(function() { return Promise.all(resolveTestFiles()); })
-    .then(function() { __karma__.start(); }, function(error) { __karma__.error(error.stack || error); });
+Promise.all([
+        System.import('@angular/core/testing'),
+        System.import('@angular/platform-browser-dynamic/testing')
+    ])
+    .then(
+        function (providers) {
+            var testing = providers[0];
+            var testingBrowser = providers[1];
 
-function createPathRecords(pathsMapping, appPath) {
-    // creates local module name mapping to global path with karma's fingerprint in path, e.g.:
-    // './vg-player/vg-player':
-    // '/base/dist/vg-player/vg-player.js?f4523daf879cfb7310ef6242682ccf10b2041b3e'
-    var moduleName = './' + resolveKeyPathForMapping('base/dist/', appPath);
-    moduleName = moduleName.replace(/\.js$/, '');
-    pathsMapping[moduleName] = appPath + '?' + window.__karma__.files[appPath];
-    return pathsMapping;
-}
-
-function onlyAppFiles(filePath) {
-    return /\/base\/dist\/(?!.*\.spec\.js$).*\.js$/.test(filePath);
-}
-
-function onlySpecFiles(path) {
-    return /\.spec\.js$/.test(path);
-}
-
-function resolveTestFiles() {
-    return Object.keys(window.__karma__.files)  // All files served by Karma.
-        .filter(onlySpecFiles)
-        .map(function(moduleName) {
-            // loads all spec files via their global module names (e.g.
-            // 'base/dist/vg-player/vg-player.spec')
-            return System.import(moduleName);
-        });
-}
-
-function resolveKeyPathForMapping(basePathWhereToStart, appPath) {
-    var location = appPath.indexOf(basePathWhereToStart);
-    if (location > -1) {
-        return appPath.substring(basePathWhereToStart.length + 1);
-    } else {
-        return appPath;
-    }
-}
+            testing.setBaseTestProviders(
+                testingBrowser.TEST_BROWSER_PLATFORM_PROVIDERS,
+                testingBrowser.TEST_BROWSER_APPLICATION_PROVIDERS
+            );
+        }
+    )
+    .then(
+        function() {
+            // Finally, load all spec files.
+            // This will run the tests directly.
+            return Promise.all(
+                allSpecFiles.map(
+                    function (moduleName) {
+                        return System.import(moduleName);
+                    }
+                )
+            );
+        }
+    )
+    .then(
+        __karma__.start, __karma__.error
+    );
