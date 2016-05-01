@@ -5,7 +5,6 @@ import {
     TestComponentBuilder,
     async,
     inject,
-    setBaseTestProviders,
     beforeEachProviders,
     beforeEach
 } from "angular2/testing";

@@ -1,38 +1,20 @@
-import {
-    it,
-    describe,
-    expect,
-    TestComponentBuilder,
-    async,
-    inject,
-    beforeEachProviders,
-    beforeEach
-} from "angular2/testing";
-import {Component, provide} from "angular2/core";
+import {it, describe, expect, async, inject, beforeEachProviders} from "angular2/testing";
+import {provide} from "angular2/core";
 import {HTTP_PROVIDERS, XHRBackend, ResponseOptions, Response} from "angular2/http";
 import {MockBackend, MockConnection} from "angular2/src/http/backends/mock_backend";
-import {GithubCard} from "./gh-card";
+import {GithubService} from "./gh-service";
 
-@Component({
-    template: '<gh-card ghUser="johnpapa"></gh-card>',
-    directives: [GithubCard]
-})
-class TestGithubCard {}
-
-describe('Github Card Tests', () => {
-    var builder;
-
+describe('Github Service Tests', () => {
     beforeEachProviders(() => {
         return [
             HTTP_PROVIDERS,
-            provide(XHRBackend, {useClass: MockBackend})
+            provide(XHRBackend, {useClass: MockBackend}),
+            GithubService
         ]
     });
 
-    beforeEach(
-        inject([XHRBackend, TestComponentBuilder], (backend, tcb) => {
-            builder = tcb;
-
+    it('Should get a user by username',
+        async(inject([XHRBackend, GithubService], (backend, service) => {
             backend.connections.subscribe(
                 (connection:MockConnection) => {
                     var options = new ResponseOptions({
@@ -73,30 +55,15 @@ describe('Github Card Tests', () => {
                     var response:Response = new Response(options);
 
                     connection.mockRespond(response);
-                }
-            );
-        })
-    );
+                });
 
-    it('Should create a GithubCard component',
-        async(() => {
-            builder.createAsync(TestGithubCard).then((fixture) => {
-                fixture.detectChanges();
-
-                let compiled = fixture.debugElement.nativeElement;
-                let name = compiled.querySelector('.avatar strong');
-                let username = compiled.querySelector('.avatar span');
-                let list = compiled.querySelectorAll('.status li a strong');
-                let repos = list[0];
-                let gists = list[1];
-                let followers = list[2];
-
-                expect(name.innerHTML).toContain('John Papa');
-                expect(username.innerHTML).toContain('@johnpapa');
-                expect(repos.innerHTML).toContain('62');
-                expect(gists.innerHTML).toContain('28');
-                expect(followers.innerHTML).toContain('4.6K');
+            service.getUserByUsername('johnpapa').subscribe((user) => {
+                expect(user.name).toBe('John Papa');
+                expect(user.login).toBe('johnpapa');
+                expect(user.public_repos).toBe(62);
+                expect(user.public_gists).toBe(28);
+                expect(user.followers).toBe(4612);
             });
-        })
+        }))
     );
 });
