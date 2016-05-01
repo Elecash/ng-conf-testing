@@ -1,16 +1,8 @@
-import {
-    it,
-    describe,
-    expect,
-    TestComponentBuilder,
-    async,
-    inject,
-    beforeEachProviders,
-    beforeEach
-} from "angular2/testing";
-import {Component, provide} from "angular2/core";
-import {HTTP_PROVIDERS, XHRBackend, ResponseOptions, Response} from "angular2/http";
-import {MockBackend, MockConnection} from "angular2/src/http/backends/mock_backend";
+import {it, describe, expect, async, inject, beforeEachProviders, beforeEach} from "@angular/core/testing";
+import {TestComponentBuilder} from "@angular/compiler/testing";
+import {Component, provide} from "@angular/core";
+import {HTTP_PROVIDERS, XHRBackend, ResponseOptions, Response} from "@angular/http";
+import {MockBackend, MockConnection} from "@angular/http/testing";
 import {GithubCard} from "./gh-card";
 
 @Component({

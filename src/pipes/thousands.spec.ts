@@ -1,4 +1,4 @@
-import {it, describe, expect, beforeEach} from 'angular2/testing';
+import {it, describe, expect, beforeEach} from '@angular/testing';
 import {Thousands} from "./thousands";
 
 describe('Thousands pipe tests', () => {

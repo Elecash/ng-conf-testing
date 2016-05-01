@@ -1,7 +1,7 @@
-import {it, describe, expect, async, inject, beforeEachProviders} from "angular2/testing";
-import {provide} from "angular2/core";
-import {HTTP_PROVIDERS, XHRBackend, ResponseOptions, Response} from "angular2/http";
-import {MockBackend, MockConnection} from "angular2/src/http/backends/mock_backend";
+import {it, describe, expect, async, inject, beforeEachProviders} from "@angular/testing";
+import {provide} from "@angular/core";
+import {HTTP_PROVIDERS, XHRBackend, ResponseOptions, Response} from "@angular/http";
+import {MockBackend, MockConnection} from "@angular/http/testing";
 import {GithubService} from "./gh-service";
 
 describe('Github Service Tests', () => {
