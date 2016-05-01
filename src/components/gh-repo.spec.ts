@@ -1,17 +1,8 @@
-import {
-    it,
-    describe,
-    expect,
-    TestComponentBuilder,
-    async,
-    inject,
-    setBaseTestProviders,
-    beforeEachProviders,
-    beforeEach
-} from "angular2/testing";
-import {Component, provide} from "angular2/core";
-import {HTTP_PROVIDERS, XHRBackend, ResponseOptions, Response} from "angular2/http";
-import {MockBackend, MockConnection} from "angular2/src/http/backends/mock_backend";
+import {it, describe, expect, async, inject, beforeEachProviders, beforeEach} from "@angular/core/testing";
+import {TestComponentBuilder} from '@angular/compiler/testing';
+import {Component, provide} from "@angular/core";
+import {HTTP_PROVIDERS, XHRBackend, ResponseOptions, Response} from "@angular/http";
+import {MockBackend, MockConnection} from "@angular/http/testing";
 import {GithubRepo} from "./gh-repo";
 
 @Component({
@@ -157,8 +148,8 @@ describe('Github Repo Tests', () => {
     );
 
     it('Should create a GithubRepo component',
-        async(() => {
-            builder.createAsync(TestGithubRepo).then((fixture) => {
+        async(inject([TestComponentBuilder], (tcb) => {
+            tcb.createAsync(TestGithubRepo).then((fixture) => {
                 fixture.detectChanges();
 
                 let compiled = fixture.debugElement.nativeElement;
@@ -177,6 +168,6 @@ describe('Github Repo Tests', () => {
                 expect(forks.innerHTML).toContain('286');
                 expect(stars.innerHTML).toContain('1166');
             });
-        })
+        }))
     );
 });
