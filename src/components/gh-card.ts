@@ -1,4 +1,4 @@
-import {Component, Input, OnChanges} from "angular2/core";
+import {Component, Input, OnChanges} from "@angular/core";
 import {GithubUser} from "../services/gh-user";
 import {Thousands} from "../pipes/thousands";
 import {GithubService} from "../services/gh-service";
