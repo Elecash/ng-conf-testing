@@ -16,5 +16,5 @@ npm install
 Try it!
 
 ```
-npm dev
+npm run dev
 ```
